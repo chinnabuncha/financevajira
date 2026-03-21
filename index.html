@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ระบบแจ้งคำร้องออนไลน์</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-bg"></div>
+
+  <header class="topbar">
+    <div class="brand-wrap">
+      <div class="brand-badge">NMU</div>
+      <div class="brand-text">
+        <div class="brand-line-1">คณะแพทยศาสตร์วชิรพยาบาล</div>
+        <div class="brand-line-2">ระบบแจ้งคำร้อง / ตรวจสอบสถานะ Ticket</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero-card">
+      <div class="hero-glow"></div>
+      <h1>ระบบแจ้งคำร้องออนไลน์</h1>
+      <p>สำหรับผู้ใช้อีเมลองค์กร <strong>@nmu.ac.th</strong> เท่านั้น</p>
+    </section>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="submitTab">ส่งคำร้อง</button>
+      <button class="tab-btn" data-tab="statusTab">ตรวจสอบสถานะ</button>
+    </div>
+
+    <!-- SUBMIT TAB -->
+    <section id="submitTab" class="tab-panel active">
+      <div class="card luxury-card">
+        <div class="card-top-line"></div>
+        <h2>กรอกข้อมูลคำร้อง</h2>
+
+        <form id="requestForm" class="form-grid">
+          <div class="form-group">
+            <label for="email">อีเมลองค์กร</label>
+            <input type="email" id="email" placeholder="example@nmu.ac.th" required />
+          </div>
+
+          <div class="form-group otp-row">
+            <div class="otp-col">
+              <label for="otp">OTP</label>
+              <input type="text" id="otp" placeholder="กรอกรหัส OTP 6 หลัก" maxlength="6" />
+            </div>
+            <div class="otp-action">
+              <label>&nbsp;</label>
+              <button type="button" class="btn btn-gold" id="sendOtpBtn">ส่ง OTP</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="sendSystem">ส่งระบบ</label>
+            <input type="text" id="sendSystem" placeholder="เช่น ระบบงานการเงิน" />
+          </div>
+
+          <div class="form-group">
+            <label for="titleName">คำนำหน้า</label>
+            <select id="titleName">
+              <option value="">-- เลือกคำนำหน้า --</option>
+              <option>นาย</option>
+              <option>นาง</option>
+              <option>นางสาว</option>
+              <option>ดร.</option>
+              <option>ผศ.</option>
+              <option>รศ.</option>
+              <option>ศ.</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="fullName">ชื่อ-นามสกุล</label>
+            <input type="text" id="fullName" placeholder="ชื่อ นามสกุล" required />
+          </div>
+
+          <div class="form-group">
+            <label for="gender">เพศ</label>
+            <select id="gender">
+              <option value="">-- เลือกเพศ --</option>
+              <option>ชาย</option>
+              <option>หญิง</option>
+              <option>ไม่ระบุ</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="division">ส่วนงาน</label>
+            <input type="text" id="division" placeholder="เช่น สำนักงานคณบดี" />
+          </div>
+
+          <div class="form-group">
+            <label for="department">หน่วยงาน/ฝ่าย/ภาควิชา/งาน/กลุ่มงาน</label>
+            <input type="text" id="department" placeholder="กรอกหน่วยงาน" />
+          </div>
+
+          <div class="form-group">
+            <label for="phone">เบอร์ภายใน</label>
+            <input type="text" id="phone" placeholder="เช่น 1234" />
+          </div>
+
+          <div class="form-group full">
+            <label for="question">ตั้งคำถามหรือข้อสงสัย</label>
+            <input type="text" id="question" placeholder="หัวข้อคำร้อง" required />
+          </div>
+
+          <div class="form-group full">
+            <label for="detail">รายละเอียดเพิ่มเติม</label>
+            <textarea id="detail" rows="5" placeholder="รายละเอียดปัญหา / ข้อสงสัย"></textarea>
+          </div>
+
+          <div class="form-group full">
+            <button type="submit" class="btn btn-primary">ยืนยันและส่งคำร้อง</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- STATUS TAB -->
+    <section id="statusTab" class="tab-panel">
+      <div class="card luxury-card">
+        <div class="card-top-line"></div>
+        <h2>ตรวจสอบสถานะ Ticket</h2>
+
+        <form id="statusForm" class="form-grid">
+          <div class="form-group">
+            <label for="statusEmail">อีเมลองค์กร</label>
+            <input type="email" id="statusEmail" placeholder="example@nmu.ac.th" required />
+          </div>
+
+          <div class="form-group otp-row">
+            <div class="otp-col">
+              <label for="statusOtp">OTP</label>
+              <input type="text" id="statusOtp" placeholder="กรอกรหัส OTP 6 หลัก" maxlength="6" />
+            </div>
+            <div class="otp-action">
+              <label>&nbsp;</label>
+              <button type="button" class="btn btn-gold" id="sendStatusOtpBtn">ส่ง OTP</button>
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <label for="ticketId">เลข Ticket</label>
+            <input type="text" id="ticketId" placeholder="เช่น ACC210320260001" required />
+          </div>
+
+          <div class="form-group full">
+            <button type="submit" class="btn btn-primary">ตรวจสอบสถานะ</button>
+          </div>
+        </form>
+
+        <div id="statusResult" class="status-result hidden"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- POPUP -->
+  <div id="popup" class="popup hidden">
+    <div class="popup-card certificate-popup">
+      <div class="cert-border"></div>
+      <div class="cert-inner">
+        <h3 id="popupTitle">สำเร็จ</h3>
+        <p id="popupMessage">ดำเนินการเรียบร้อย</p>
+        <button id="closePopupBtn" class="btn btn-primary">ปิด</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="loading" class="loading hidden">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <p>กำลังดำเนินการ...</p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
