@@ -1,4 +1,4 @@
-const API_URL = 'https://script.google.com/a/macros/nmu.ac.th/s/AKfycbzvj8lMpV8ZPSGhAsXUrrznYi2dPE1VSP26HC2agGGYF_E58y6KODJ01VsLDuql3YGX/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbzvj8lMpV8ZPSGhAsXUrrznYi2dPE1VSP26HC2agGGYF_E58y6KODJ01VsLDuql3YGX/exec';
 
 let currentRequestId = '';
 let verifiedRequestId = '';
