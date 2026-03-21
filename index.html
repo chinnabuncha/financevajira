@@ -1,182 +1,216 @@
 <!DOCTYPE html>
 <html lang="th">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ระบบแจ้งคำร้องออนไลน์</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="page-bg"></div>
-
-  <header class="topbar">
-    <div class="brand-wrap">
-      <div class="brand-badge">NMU</div>
-      <div class="brand-text">
-        <div class="brand-line-1">คณะแพทยศาสตร์วชิรพยาบาล</div>
-        <div class="brand-line-2">ระบบแจ้งคำร้อง / ตรวจสอบสถานะ Ticket</div>
-      </div>
-    </div>
-  </header>
-
-  <main class="container">
-    <section class="hero-card">
-      <div class="hero-glow"></div>
-      <h1>ระบบแจ้งคำร้องออนไลน์</h1>
-      <p>สำหรับผู้ใช้อีเมลองค์กร <strong>@nmu.ac.th</strong> เท่านั้น</p>
-    </section>
-
-    <div class="tabs">
-      <button class="tab-btn active" data-tab="submitTab">ส่งคำร้อง</button>
-      <button class="tab-btn" data-tab="statusTab">ตรวจสอบสถานะ</button>
-    </div>
-
-    <!-- SUBMIT TAB -->
-    <section id="submitTab" class="tab-panel active">
-      <div class="card luxury-card">
-        <div class="card-top-line"></div>
-        <h2>กรอกข้อมูลคำร้อง</h2>
-
-        <form id="requestForm" class="form-grid">
-          <div class="form-group">
-            <label for="email">อีเมลองค์กร</label>
-            <input type="email" id="email" placeholder="example@nmu.ac.th" required />
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>ฟอร์มรับคำร้อง - ฝ่ายการคลัง</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="page">
+      <div class="shell">
+        <section class="hero">
+          <div class="hero-topbar">
+            <div class="hero-topbar-left">
+              <div class="inst-line-1">Vajira Hospital Faculty of Medicine</div>
+              <div class="inst-line-2">ฝ่ายการคลัง • คณะแพทยศาสตร์วชิรพยาบาล มหาวิทยาลัยนวมินทราธิราช</div>
+            </div>
+            <div class="hero-topbar-right">Executive Service Portal</div>
           </div>
 
-          <div class="form-group otp-row">
-            <div class="otp-col">
-              <label for="otp">OTP</label>
-              <input type="text" id="otp" placeholder="กรอกรหัส OTP 6 หลัก" maxlength="6" />
+          <div class="hero-main">
+            <div class="logo-frame">
+              <img
+                id="mainLogo"
+                src="https://drive.google.com/thumbnail?id=11pn9kzQIox1rgSxTGEpkeTaKn_-sllod&sz=w400"
+                alt="Logo"
+                loading="eager"
+                decoding="async"
+                onerror="this.onerror=null;this.src='https://drive.google.com/uc?export=view&id=11pn9kzQIox1rgSxTGEpkeTaKn_-sllod';"
+              >
             </div>
-            <div class="otp-action">
-              <label>&nbsp;</label>
-              <button type="button" class="btn btn-gold" id="sendOtpBtn">ส่ง OTP</button>
+
+            <div class="hero-content">
+              <div class="hero-badge">VVIP Financial Support Experience</div>
+              <h1 class="hero-title">ฟอร์มรับคำร้อง</h1>
+              <p class="hero-subtitle">ระบบงานบัญชี สำหรับบุคลากรภายในองค์กร พร้อมยืนยันตัวตนด้วยอีเมลมหาวิทยาลัยก่อนส่งคำร้อง</p>
             </div>
           </div>
+        </section>
 
-          <div class="form-group">
-            <label for="sendSystem">ส่งระบบ</label>
-            <input type="text" id="sendSystem" placeholder="เช่น ระบบงานการเงิน" />
-          </div>
-
-          <div class="form-group">
-            <label for="titleName">คำนำหน้า</label>
-            <select id="titleName">
-              <option value="">-- เลือกคำนำหน้า --</option>
-              <option>นาย</option>
-              <option>นาง</option>
-              <option>นางสาว</option>
-              <option>ดร.</option>
-              <option>ผศ.</option>
-              <option>รศ.</option>
-              <option>ศ.</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="fullName">ชื่อ-นามสกุล</label>
-            <input type="text" id="fullName" placeholder="ชื่อ นามสกุล" required />
-          </div>
-
-          <div class="form-group">
-            <label for="gender">เพศ</label>
-            <select id="gender">
-              <option value="">-- เลือกเพศ --</option>
-              <option>ชาย</option>
-              <option>หญิง</option>
-              <option>ไม่ระบุ</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="division">ส่วนงาน</label>
-            <input type="text" id="division" placeholder="เช่น สำนักงานคณบดี" />
-          </div>
-
-          <div class="form-group">
-            <label for="department">หน่วยงาน/ฝ่าย/ภาควิชา/งาน/กลุ่มงาน</label>
-            <input type="text" id="department" placeholder="กรอกหน่วยงาน" />
-          </div>
-
-          <div class="form-group">
-            <label for="phone">เบอร์ภายใน</label>
-            <input type="text" id="phone" placeholder="เช่น 1234" />
-          </div>
-
-          <div class="form-group full">
-            <label for="question">ตั้งคำถามหรือข้อสงสัย</label>
-            <input type="text" id="question" placeholder="หัวข้อคำร้อง" required />
-          </div>
-
-          <div class="form-group full">
-            <label for="detail">รายละเอียดเพิ่มเติม</label>
-            <textarea id="detail" rows="5" placeholder="รายละเอียดปัญหา / ข้อสงสัย"></textarea>
-          </div>
-
-          <div class="form-group full">
-            <button type="submit" class="btn btn-primary">ยืนยันและส่งคำร้อง</button>
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <!-- STATUS TAB -->
-    <section id="statusTab" class="tab-panel">
-      <div class="card luxury-card">
-        <div class="card-top-line"></div>
-        <h2>ตรวจสอบสถานะ Ticket</h2>
-
-        <form id="statusForm" class="form-grid">
-          <div class="form-group">
-            <label for="statusEmail">อีเมลองค์กร</label>
-            <input type="email" id="statusEmail" placeholder="example@nmu.ac.th" required />
-          </div>
-
-          <div class="form-group otp-row">
-            <div class="otp-col">
-              <label for="statusOtp">OTP</label>
-              <input type="text" id="statusOtp" placeholder="กรอกรหัส OTP 6 หลัก" maxlength="6" />
+        <div class="content">
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">ยืนยันตัวตนก่อนกรอกคำร้อง</h2>
+              <p class="panel-sub">กรุณาใช้อีเมล @nmu.ac.th เพื่อรับ OTP และปลดล็อกแบบฟอร์มสำหรับการส่งคำร้อง</p>
             </div>
-            <div class="otp-action">
-              <label>&nbsp;</label>
-              <button type="button" class="btn btn-gold" id="sendStatusOtpBtn">ส่ง OTP</button>
+
+            <div class="panel-body">
+              <div class="field">
+                <label>อีเมลสำหรับรับ OTP (@nmu.ac.th)</label>
+                <div class="verify-layout">
+                  <div class="input-shell">
+                    <input type="email" id="ownerEmail" placeholder="name@nmu.ac.th" autocomplete="email">
+                  </div>
+                  <button class="btn-primary" type="button" id="otpBtn" onclick="openOtpFlow()">ส่ง OTP</button>
+                </div>
+
+                <div class="note">ต้องยืนยันอีเมลให้เรียบร้อยก่อน จึงจะกรอกข้อมูลคำร้องได้</div>
+                <div id="verifiedBadge" class="verified-badge hidden"></div>
+              </div>
             </div>
-          </div>
+          </section>
 
-          <div class="form-group full">
-            <label for="ticketId">เลข Ticket</label>
-            <input type="text" id="ticketId" placeholder="เช่น ACC210320260001" required />
-          </div>
+          <section class="panel form-locked" id="ticketFormArea">
+            <div class="panel-head">
+              <h2 class="panel-title">ข้อมูลคำร้อง</h2>
+              <p class="panel-sub">กรอกข้อมูลให้ครบถ้วนเพื่อให้เจ้าหน้าที่ดำเนินการได้อย่างรวดเร็วและถูกต้อง</p>
+            </div>
 
-          <div class="form-group full">
-            <button type="submit" class="btn btn-primary">ตรวจสอบสถานะ</button>
-          </div>
-        </form>
+            <div class="panel-body">
+              <div class="grid">
+                <div class="field full">
+                  <label>ส่งระบบ *</label>
+                  <div class="input-shell">
+                    <select id="sendSystem">
+                      <option value="">-- กรุณาเลือก --</option>
+                    </select>
+                  </div>
+                </div>
 
-        <div id="statusResult" class="status-result hidden"></div>
-      </div>
-    </section>
-  </main>
+                <div class="field">
+                  <label>คำนำหน้า *</label>
+                  <div class="input-shell">
+                    <select id="titleName">
+                      <option value="">-- กรุณาเลือก --</option>
+                      <option value="นาย">นาย</option>
+                      <option value="นาง">นาง</option>
+                      <option value="นางสาว">นางสาว</option>
+                      <option value="อื่นๆ">อื่นๆ</option>
+                    </select>
+                  </div>
+                </div>
 
-  <!-- POPUP -->
-  <div id="popup" class="popup hidden">
-    <div class="popup-card certificate-popup">
-      <div class="cert-border"></div>
-      <div class="cert-inner">
-        <h3 id="popupTitle">สำเร็จ</h3>
-        <p id="popupMessage">ดำเนินการเรียบร้อย</p>
-        <button id="closePopupBtn" class="btn btn-primary">ปิด</button>
+                <div class="field">
+                  <label>ชื่อ-นามสกุล *</label>
+                  <div class="input-shell">
+                    <input type="text" id="fullName" autocomplete="name">
+                  </div>
+                </div>
+
+                <div class="field full">
+                  <label>เพศ *</label>
+                  <div class="radio-wrap">
+                    <label class="radio-pill"><input type="radio" name="gender" value="ชาย"> ชาย</label>
+                    <label class="radio-pill"><input type="radio" name="gender" value="หญิง"> หญิง</label>
+                    <label class="radio-pill"><input type="radio" name="gender" value="ไม่ระบุ"> ไม่ระบุ</label>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label>ส่วนงาน *</label>
+                  <div class="input-shell">
+                    <select id="division">
+                      <option value="">-- กรุณาเลือกส่วนงาน --</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label>ฝ่าย *</label>
+                  <div class="input-shell">
+                    <select id="department">
+                      <option value="">-- กรุณาเลือกฝ่าย --</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="field full">
+                  <label>เบอร์ภายใน *</label>
+                  <div class="input-shell">
+                    <input type="text" id="phone" inputmode="numeric">
+                  </div>
+                </div>
+
+                <div class="field full">
+                  <label>ตั้งคำถามหรือข้อสงสัย *</label>
+                  <div class="input-shell">
+                    <input type="text" id="question">
+                  </div>
+                </div>
+
+                <div class="field full">
+                  <label>รายละเอียดเพิ่มเติม</label>
+                  <div class="input-shell">
+                    <textarea id="detail"></textarea>
+                  </div>
+                </div>
+
+                <div class="field full">
+                  <label>แนบไฟล์</label>
+                  <div class="file-card">
+                    <div class="input-shell">
+                      <input type="file" id="files" multiple>
+                    </div>
+                    <div class="note">รองรับ PDF / JPG / PNG / DOCX และควรใช้ไฟล์ขนาดไม่ใหญ่มาก</div>
+                    <div id="fileSummary" class="file-summary">ยังไม่ได้เลือกไฟล์</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="vvip-box">
+                เวอร์ชันนี้ออกแบบในแนวผู้บริหารและบุคลากรภายในองค์กร โดยคงความหรูหราและความชัดเจนในการใช้งานบนมือถือ หากแนบไฟล์จำนวนมากหรือไฟล์ขนาดใหญ่มาก การส่งข้อมูลอาจใช้เวลานานขึ้น
+              </div>
+
+              <div class="actions">
+                <button class="btn-primary" type="button" id="submitBtn" onclick="submitTicket()">ยืนยัน ส่งคำร้อง</button>
+                <button class="btn-secondary" type="button" onclick="resetForm()">ล้างข้อมูล</button>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div id="loading" class="loading hidden">
-    <div class="loading-card">
-      <div class="spinner"></div>
-      <p>กำลังดำเนินการ...</p>
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="loading-box">
+        <div class="spinner"></div>
+        <div id="loadingText">กำลังดำเนินการ...</div>
+      </div>
     </div>
-  </div>
 
-  <script src="app.js"></script>
-</body>
+    <div id="otpModal" class="modal-backdrop">
+      <div class="modal">
+        <h3>ยืนยันอีเมล</h3>
+        <p id="otpModalText">กรุณากรอก OTP ที่ส่งไปยังอีเมลของท่าน</p>
+
+        <div class="field">
+          <label>OTP 6 หลัก</label>
+          <div class="input-shell">
+            <input type="text" id="otpInput" maxlength="6" inputmode="numeric" placeholder="กรอกรหัส 6 หลัก">
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-primary vip-dark" type="button" onclick="verifyOtp()">ยืนยัน OTP</button>
+          <button class="btn-outline" type="button" onclick="closeOtpModal()">ยกเลิก</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="alertModal" class="modal-backdrop">
+      <div class="modal">
+        <div id="alertIcon" class="alert-icon alert-success">✓</div>
+        <h3 id="alertTitle">สำเร็จ</h3>
+        <p id="alertMessage">ทำรายการเรียบร้อยแล้ว</p>
+        <div id="alertExtra"></div>
+
+        <div class="modal-actions">
+          <button class="btn-primary vip-dark" type="button" onclick="closeAlertModal()">ตกลง</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
 </html>
