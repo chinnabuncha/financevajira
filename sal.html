@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SAL - ระบบงานการเงินจ่าย(เงินเดือน)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <script>
+    window.FORM_META = {
+      formType: 'sal',
+      prefix: 'SAL',
+      sheetName: 'ระบบงานการเงินจ่าย(เงินเดือน)',
+      title: 'SAL ระบบงานการเงินจ่าย(เงินเดือน)',
+      subtitle: 'ฟอร์มสำหรับระบบงานการเงินจ่าย(เงินเดือน)',
+      customFields: [
+        { key: 'salaryMonth', label: 'เดือนเงินเดือน', type: 'text', required: true },
+        { key: 'bankName', label: 'ธนาคาร', type: 'text', required: false },
+        { key: 'salaryIssue', label: 'ประเด็นที่พบ', type: 'select', required: true, options: ['เงินไม่เข้า', 'ยอดไม่ถูกต้อง', 'เอกสารไม่ครบ', 'อื่นๆ'] }
+      ]
+    };
+  </script>
+  <div class="page"><div class="shell">
+    <section class="hero"><div class="hero-topbar"><div class="inst-line-1">Faculty of Medicine Vajira Hospital</div><div class="inst-line-2">ฝ่ายการคลัง • ระบบบริการออนไลน์</div><div class="hero-topbar-right">sal.html</div></div><div class="hero-main"><div class="logo-frame"><img src="https://drive.google.com/thumbnail?id=11pn9kzQIox1rgSxTGEpkeTaKn_-sllod&sz=w400" alt="Logo"></div><div><div class="hero-badge">Executive Service Portal</div><h1 class="hero-title" id="heroTitle">SAL</h1><p class="hero-subtitle" id="heroSubtitle"></p></div></div></section>
+    <div class="content">
+      <section class="panel"><div class="panel-head"><h2 class="panel-title">ยืนยันตัวตนก่อนกรอกคำร้อง</h2><p class="panel-sub">ใช้อีเมล @nmu.ac.th เพื่อรับ OTP</p></div><div class="panel-body"><div class="field"><label>อีเมลสำหรับรับ OTP</label><div class="verify-layout"><div class="input-shell"><input type="email" id="ownerEmail" placeholder="name@nmu.ac.th"></div><button class="btn-primary" type="button" id="otpBtn" onclick="openOtpFlow()">ส่ง OTP</button></div><div class="note">ยืนยันอีเมลก่อน จึงจะกรอกฟอร์มได้</div><div id="verifiedBadge" class="verified-badge hidden"></div></div></div></section>
+      <section class="panel form-locked" id="ticketFormArea"><div class="panel-head"><h2 class="panel-title" id="formTitle">ข้อมูลคำร้อง</h2><p class="panel-sub">กรอกข้อมูลให้ครบถ้วน</p></div><div class="panel-body"><div class="grid">
+        <div class="field"><label>คำนำหน้า *</label><div class="input-shell"><select id="titleName"><option value="">-- กรุณาเลือก --</option><option>นาย</option><option>นาง</option><option>นางสาว</option><option>อื่นๆ</option></select></div></div>
+        <div class="field"><label>ชื่อ-นามสกุล *</label><div class="input-shell"><input type="text" id="fullName"></div></div>
+        <div class="field full"><label>เพศ *</label><div class="radio-wrap"><label class="radio-pill"><input type="radio" name="gender" value="ชาย"> ชาย</label><label class="radio-pill"><input type="radio" name="gender" value="หญิง"> หญิง</label><label class="radio-pill"><input type="radio" name="gender" value="ไม่ระบุ"> ไม่ระบุ</label></div></div>
+        <div class="field"><label>ส่วนงาน *</label><div class="input-shell"><input type="text" id="division"></div></div>
+        <div class="field"><label>หน่วยงาน/ฝ่าย *</label><div class="input-shell"><input type="text" id="department"></div></div>
+        <div class="field full"><label>เบอร์ภายใน *</label><div class="input-shell"><input type="text" id="phone"></div></div>
+        <div class="field full"><label>หัวข้อคำร้อง *</label><div class="input-shell"><input type="text" id="question"></div></div>
+        <div id="customFieldsWrap" class="field full"></div>
+        <div class="field full"><label>รายละเอียดเพิ่มเติม</label><div class="input-shell"><textarea id="detail"></textarea></div></div>
+        <div class="field full"><label>แนบไฟล์</label><div class="file-card"><div class="input-shell"><input type="file" id="files" multiple></div><div class="note">เลือกได้หลายไฟล์</div><div id="fileSummary" class="file-summary">ยังไม่ได้เลือกไฟล์</div></div></div>
+      </div><div class="actions"><button class="btn-primary" type="button" id="submitBtn" onclick="submitTicket()">ยืนยัน ส่งคำร้อง</button><button class="btn-secondary" type="button" onclick="resetForm()">ล้างข้อมูล</button></div></div></section>
+    </div>
+  </div></div>
+  <div id="loadingOverlay" class="loading-overlay"><div class="loading-box"><div class="spinner"></div><div id="loadingText">กำลังดำเนินการ...</div></div></div>
+  <div id="otpModal" class="modal-backdrop"><div class="modal"><h3>ยืนยันอีเมล</h3><p id="otpModalText">กรุณากรอก OTP</p><div class="field"><label>OTP 6 หลัก</label><div class="input-shell"><input type="text" id="otpInput" maxlength="6" inputmode="numeric"></div></div><div class="modal-actions"><button class="btn-primary vip-dark" type="button" onclick="verifyOtp()">ยืนยัน OTP</button><button class="btn-outline" type="button" onclick="closeOtpModal()">ยกเลิก</button></div></div></div>
+  <div id="alertModal" class="modal-backdrop"><div class="modal"><div id="alertIcon" class="alert-icon alert-success">✓</div><h3 id="alertTitle">สำเร็จ</h3><p id="alertMessage">ทำรายการเรียบร้อยแล้ว</p><div id="alertExtra"></div><div class="modal-actions"><button class="btn-primary vip-dark" type="button" onclick="closeAlertModal()">ตกลง</button></div></div></div>
+  <script src="app.js"></script>
+</body>
+</html>
