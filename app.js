@@ -106,7 +106,10 @@ function addQuestionBlock(prefill){
   const block = holder.firstElementChild; wrap.appendChild(block);
   const fileInput = block.querySelector('.item-files');
   if(fileInput) fileInput.addEventListener('change', function(){ updateSingleFileSummary(fileInput); });
-  if(prefill){ const q=block.querySelector('.question-input'); const d=block.querySelector('.detail-input'); if(q) q.value=prefill.question||''; if(d) d.value=prefill.detail||''; }
+  const q=block.querySelector('.question-input');
+  const d=block.querySelector('.detail-input');
+  if(q) q.value = prefill && prefill.question ? prefill.question : '';
+  if(d) d.value = prefill && prefill.detail ? prefill.detail : '';
   renumberQuestionBlocks(); updateQuestionSummary();
 }
 function removeQuestionBlock(btn){ const block = btn.closest('.question-block'); if(!block) return; block.remove(); renumberQuestionBlocks(); updateQuestionSummary(); }
@@ -185,11 +188,10 @@ function resetQuestionBlocks(){ const wrap=$('questionItems'); if(!wrap) return;
 function resetForm(){
   if($('ownerEmail')){ $('ownerEmail').value=''; $('ownerEmail').readOnly=false; }
   ['sendSystem','titleName','fullName','division','department','phone'].forEach(function(id){ if($(id)) $(id).value=''; });
-  if($('files')) $('files').value=''; if($('otpInput')) $('otpInput').value='';
+  if($('otpInput')) $('otpInput').value='';
   document.querySelectorAll('input[name="gender"]').forEach(function(el){ el.checked=false; });
   document.querySelectorAll('.otp-section').forEach(function(el){ el.classList.add('form-locked'); });
   if($('verifiedBadge')){ $('verifiedBadge').classList.add('hidden'); $('verifiedBadge').textContent=''; }
-  if($('fileSummary')) $('fileSummary').textContent='ยังไม่ได้เลือกไฟล์';
   verifiedRequestId=''; verifiedEmail=''; currentRequestId=''; closeAlertAction='close';
   resetQuestionBlocks(); closeOtpModal(); if($('alertModal')) $('alertModal').style.display='none';
 }
@@ -209,21 +211,20 @@ function validateBeforeSubmit(payload){
 }
 function fileToBase64(file){ return new Promise(function(resolve,reject){ const reader=new FileReader(); reader.onload=function(e){ const result=e.target.result||''; const base64=String(result).split(',')[1]||''; resolve({ name:file.name, mimeType:file.type||'application/octet-stream', base64:base64 }); }; reader.onerror=function(){ reject(new Error('อ่านไฟล์ไม่สำเร็จ: ' + file.name)); }; reader.readAsDataURL(file); }); }
 async function collectAllFilesForLimitCheck(){
-  const all=[]; if($('files') && $('files').files) for(const f of $('files').files) all.push(f);
+  const all=[];
   document.querySelectorAll('.item-files').forEach(function(input){ for(const f of input.files || []) all.push(f); });
   let totalSize=0; for(const f of all){ const sizeMb=f.size/(1024*1024); totalSize+=f.size; if(sizeMb > MAX_FILE_SIZE_MB) throw new Error('ไฟล์ "' + f.name + '" มีขนาดเกิน ' + MAX_FILE_SIZE_MB + ' MB'); }
   const totalMb=totalSize/(1024*1024); if(totalMb > MAX_TOTAL_SIZE_MB) throw new Error('ขนาดไฟล์รวมเกิน ' + MAX_TOTAL_SIZE_MB + ' MB');
 }
 async function collectPayload(){
   await collectAllFilesForLimitCheck();
-  const generalFiles=[]; if($('files') && $('files').files){ for(const f of $('files').files){ const item=await fileToBase64(f); item.scope='general'; generalFiles.push(item); } }
   const items=[]; const itemFiles=[]; const blocks=getAllQuestionBlocks();
   for(let i=0;i<blocks.length;i++){
     const block=blocks[i]; const question=((block.querySelector('.question-input') || {}).value || '').trim(); const detail=((block.querySelector('.detail-input') || {}).value || '').trim(); const fileInput=block.querySelector('.item-files');
     items.push({ question: question, detail: detail });
     if(fileInput && fileInput.files){ for(const f of fileInput.files){ const item=await fileToBase64(f); item.scope='item'; item.itemNo=i+1; itemFiles.push(item); } }
   }
-  return { formType: FORM_CONFIG.formType, ownerEmail: verifiedEmail || (($('ownerEmail')||{}).value||'').trim(), sendSystem:(($('sendSystem')||{}).value||'').trim(), titleName:(($('titleName')||{}).value||'').trim(), fullName:(($('fullName')||{}).value||'').trim(), gender:getGender(), division:(($('division')||{}).value||'').trim(), department:(($('department')||{}).value||'').trim(), phone:(($('phone')||{}).value||'').trim(), items:items, files:generalFiles.concat(itemFiles) };
+  return { formType: FORM_CONFIG.formType, ownerEmail: verifiedEmail || (($('ownerEmail')||{}).value||'').trim(), sendSystem:(($('sendSystem')||{}).value||'').trim(), titleName:(($('titleName')||{}).value||'').trim(), fullName:(($('fullName')||{}).value||'').trim(), gender:getGender(), division:(($('division')||{}).value||'').trim(), department:(($('department')||{}).value||'').trim(), phone:(($('phone')||{}).value||'').trim(), items:items, files:itemFiles };
 }
 async function submitTicket(){
   if(isBusy) return;
@@ -238,4 +239,4 @@ async function submitTicket(){
   finally{ setLoading(false); }
 }
 function applyFormBranding(){ document.documentElement.setAttribute('data-form-type', FORM_CONFIG.formType || 'acc'); if($('heroSystemName')) $('heroSystemName').textContent = FORM_CONFIG.systemName || 'ระบบบริการ'; if($('heroPrefixText')) $('heroPrefixText').textContent = (FORM_CONFIG.prefix || '').toUpperCase(); if(FORM_CONFIG.systemName) document.title = FORM_CONFIG.systemName; }
-window.addEventListener('load', function(){ applyFormBranding(); loadDropdownData(); resetQuestionBlocks(); if($('files')) $('files').addEventListener('change', updateFileSummary); if($('addQuestionBtn')) $('addQuestionBtn').addEventListener('click', addQuestionBlock); });
+window.addEventListener('load', function(){ applyFormBranding(); loadDropdownData(); resetQuestionBlocks(); if($('addQuestionBtn')) $('addQuestionBtn').addEventListener('click', addQuestionBlock); });
