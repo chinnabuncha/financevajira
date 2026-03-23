@@ -1,4 +1,4 @@
-const API_URL = 'https://script.google.com/macros/s/AKfycbzvj8lMpV8ZPSGhAsXUrrznYi2dPE1VSP26HC2agGGYF_E58y6KODJ01VsLDuql3YGX/exec';
+const API_URL = 'PUT_YOUR_WEBAPP_URL_HERE';
 
 let currentRequestId = '';
 let verifiedRequestId = '';
@@ -8,7 +8,7 @@ let isBusy = false;
 
 const MAX_FILE_SIZE_MB = 5;
 const MAX_TOTAL_SIZE_MB = 15;
-const MAX_QUESTION_ITEMS = 3;
+const MAX_QUESTION_ITEMS = 10;
 
 const FORM_CONFIG = window.FORM_CONFIG || {
   formType: 'acc',
@@ -52,11 +52,10 @@ async function api(action, payload = {}) {
 
 function setLoading(isLoading, text) {
   isBusy = !!isLoading;
-  if ($('loadingOverlay')) $('loadingOverlay').style.display = isLoading ? 'flex' : 'none';
-  if ($('loadingText')) $('loadingText').textContent = text || 'กำลังดำเนินการ...';
   if ($('otpBtn')) $('otpBtn').disabled = isLoading;
   if ($('submitBtn')) $('submitBtn').disabled = isLoading;
   if ($('addQuestionBtn')) $('addQuestionBtn').disabled = isLoading;
+  document.body.classList.toggle('is-busy', !!isLoading);
 }
 
 function getGender() {
@@ -284,7 +283,7 @@ function unlockForm(email) {
     $('ownerEmail').value = verifiedEmail;
     $('ownerEmail').readOnly = true;
   }
-  if ($('ticketFormArea')) $('ticketFormArea').classList.remove('form-locked');
+  document.querySelectorAll('.form-locked').forEach(function(el) { el.classList.remove('form-locked'); });
 
   const badge = $('verifiedBadge');
   if (badge) {
@@ -421,7 +420,7 @@ function resetForm() {
     el.checked = false;
   });
 
-  if ($('ticketFormArea')) $('ticketFormArea').classList.add('form-locked');
+  document.querySelectorAll('.otp-section').forEach(function(el) { el.classList.add('form-locked'); });
   if ($('verifiedBadge')) {
     $('verifiedBadge').classList.add('hidden');
     $('verifiedBadge').textContent = '';
