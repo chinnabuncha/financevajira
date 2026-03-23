@@ -1,4 +1,4 @@
-const API_URL = 'https://script.google.com/macros/s/AKfycbzvj8lMpV8ZPSGhAsXUrrznYi2dPE1VSP26HC2agGGYF_E58y6KODJ01VsLDuql3YGX/exec';
+const API_URL = 'PUT_YOUR_WEBAPP_URL_HERE';
 
 let currentRequestId = '';
 let verifiedRequestId = '';
@@ -8,6 +8,13 @@ let isBusy = false;
 
 const MAX_FILE_SIZE_MB = 5;
 const MAX_TOTAL_SIZE_MB = 15;
+const MAX_QUESTION_ITEMS = 3;
+
+const FORM_CONFIG = window.FORM_CONFIG || {
+  formType: 'acc',
+  systemName: 'ระบบงานบัญชี',
+  prefix: 'ACC'
+};
 
 function $(id) {
   return document.getElementById(id);
@@ -45,10 +52,11 @@ async function api(action, payload = {}) {
 
 function setLoading(isLoading, text) {
   isBusy = !!isLoading;
-  $('loadingOverlay').style.display = isLoading ? 'flex' : 'none';
-  $('loadingText').textContent = text || 'กำลังดำเนินการ...';
-  $('otpBtn').disabled = isLoading;
-  $('submitBtn').disabled = isLoading;
+  if ($('loadingOverlay')) $('loadingOverlay').style.display = isLoading ? 'flex' : 'none';
+  if ($('loadingText')) $('loadingText').textContent = text || 'กำลังดำเนินการ...';
+  if ($('otpBtn')) $('otpBtn').disabled = isLoading;
+  if ($('submitBtn')) $('submitBtn').disabled = isLoading;
+  if ($('addQuestionBtn')) $('addQuestionBtn').disabled = isLoading;
 }
 
 function getGender() {
@@ -58,8 +66,9 @@ function getGender() {
 
 function fillSelectOptions(selectId, items, placeholder) {
   const select = $(selectId);
-  const frag = document.createDocumentFragment();
+  if (!select) return;
 
+  const frag = document.createDocumentFragment();
   const first = document.createElement('option');
   first.value = '';
   first.textContent = placeholder;
@@ -80,29 +89,33 @@ function showAlertPopup(type, title, message, extraHtml, action) {
   closeAlertAction = action || 'close';
 
   const icon = $('alertIcon');
-  if (type === 'error') {
-    icon.className = 'alert-icon alert-error';
-    icon.textContent = '!';
-  } else {
-    icon.className = 'alert-icon alert-success';
-    icon.textContent = '✓';
+  if (icon) {
+    if (type === 'error') {
+      icon.className = 'alert-icon alert-error';
+      icon.textContent = '!';
+    } else {
+      icon.className = 'alert-icon alert-success';
+      icon.textContent = '✓';
+    }
   }
 
-  $('alertTitle').textContent = title || 'แจ้งเตือน';
-  $('alertMessage').textContent = message || '';
-  $('alertExtra').innerHTML = extraHtml || '';
-  $('alertModal').style.display = 'flex';
+  if ($('alertTitle')) $('alertTitle').textContent = title || 'แจ้งเตือน';
+  if ($('alertMessage')) $('alertMessage').textContent = message || '';
+  if ($('alertExtra')) $('alertExtra').innerHTML = extraHtml || '';
+  if ($('alertModal')) $('alertModal').style.display = 'flex';
 }
 
 function showErrorPopup(message) {
   showAlertPopup('error', 'เกิดข้อผิดพลาด', message || 'ไม่สามารถทำรายการได้', '', 'close');
 }
 
-function buildLuxuryCertificate(ticketId, checkUrl) {
+function buildLuxuryCertificate(ticketId, checkUrl, itemCount) {
   return '' +
     '<div class="certificate-box">' +
       '<div class="certificate-title">Official Confirmation</div>' +
       '<div class="certificate-ticket">Ticket ID: ' + esc(ticketId) + '</div>' +
+      '<div class="certificate-line"><strong>ระบบ:</strong> ' + esc(FORM_CONFIG.systemName || '-') + '</div>' +
+      '<div class="certificate-line"><strong>จำนวนรายการคำถาม:</strong> ' + esc(itemCount || 1) + ' รายการ</div>' +
       '<div class="certificate-line"><strong>สถานะ:</strong> ระบบบันทึกคำร้องเรียบร้อยแล้ว</div>' +
       '<div class="certificate-line"><strong>ลิงก์ตรวจสอบสถานะ:</strong><br><a href="' + esc(checkUrl || '#') + '" target="_blank">' + esc(checkUrl || '-') + '</a></div>' +
     '</div>';
@@ -113,7 +126,7 @@ function showSuccessPopup(title, message, extraHtml, action) {
 }
 
 function closeAlertModal() {
-  $('alertModal').style.display = 'none';
+  if ($('alertModal')) $('alertModal').style.display = 'none';
 
   if (closeAlertAction === 'reload') {
     window.location.href = window.location.pathname + window.location.search;
@@ -126,15 +139,128 @@ function closeAlertModal() {
 }
 
 function openOtpModal() {
-  $('otpModal').style.display = 'flex';
+  if ($('otpModal')) $('otpModal').style.display = 'flex';
 }
 
 function closeOtpModal() {
-  $('otpModal').style.display = 'none';
+  if ($('otpModal')) $('otpModal').style.display = 'none';
+}
+
+function getAllQuestionBlocks() {
+  return Array.from(document.querySelectorAll('.question-block'));
+}
+
+function updateQuestionSummary() {
+  const count = getAllQuestionBlocks().length || 1;
+  if ($('questionCountText')) {
+    $('questionCountText').textContent = 'ขณะนี้มี ' + count + ' รายการคำถาม';
+  }
+  if ($('addQuestionBtn')) {
+    $('addQuestionBtn').disabled = count >= MAX_QUESTION_ITEMS || isBusy;
+  }
+}
+
+function getQuestionBlockHtml(index) {
+  const no = index + 1;
+  return '' +
+    '<div class="question-block" data-index="' + no + '">' +
+      '<div class="question-block-head">' +
+        '<div class="question-block-title">คำถามรายการที่ ' + no + '</div>' +
+        (no > 1 ? '<button type="button" class="btn-chip btn-chip-danger" onclick="removeQuestionBlock(this)">ลบรายการนี้</button>' : '') +
+      '</div>' +
+      '<div class="grid">' +
+        '<div class="field full">' +
+          '<label>ตั้งคำถามหรือข้อสงสัย <span class="required-star">*</span></label>' +
+          '<div class="input-shell">' +
+            '<input type="text" class="question-input" placeholder="กรอกหัวข้อคำถามหรือข้อสงสัย">' +
+          '</div>' +
+        '</div>' +
+        '<div class="field full">' +
+          '<label>รายละเอียดเพิ่มเติม</label>' +
+          '<div class="input-shell">' +
+            '<textarea class="detail-input" placeholder="กรอกรายละเอียดเพิ่มเติม"></textarea>' +
+          '</div>' +
+        '</div>' +
+        '<div class="field full">' +
+          '<label>ไฟล์แนบของรายการนี้</label>' +
+          '<div class="file-card">' +
+            '<input type="file" class="item-files" multiple>' +
+            '<div class="item-file-summary file-summary">ยังไม่ได้เลือกไฟล์</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+}
+
+function addQuestionBlock(prefill) {
+  const wrap = $('questionItems');
+  if (!wrap) return;
+
+  const current = getAllQuestionBlocks().length;
+  if (current >= MAX_QUESTION_ITEMS) {
+    showErrorPopup('เพิ่มคำถามได้สูงสุด ' + MAX_QUESTION_ITEMS + ' รายการต่อ 1 Ticket');
+    return;
+  }
+
+  const holder = document.createElement('div');
+  holder.innerHTML = getQuestionBlockHtml(current);
+  const block = holder.firstChild;
+  wrap.appendChild(block);
+
+  const fileInput = block.querySelector('.item-files');
+  if (fileInput) {
+    fileInput.addEventListener('change', function() {
+      updateSingleFileSummary(fileInput);
+    });
+  }
+
+  if (prefill) {
+    const q = block.querySelector('.question-input');
+    const d = block.querySelector('.detail-input');
+    if (q) q.value = prefill.question || '';
+    if (d) d.value = prefill.detail || '';
+  }
+
+  renumberQuestionBlocks();
+  updateQuestionSummary();
+}
+
+function removeQuestionBlock(btn) {
+  const block = btn.closest('.question-block');
+  if (!block) return;
+  block.remove();
+  renumberQuestionBlocks();
+  updateQuestionSummary();
+}
+
+function renumberQuestionBlocks() {
+  getAllQuestionBlocks().forEach(function(block, idx) {
+    block.dataset.index = String(idx + 1);
+    const title = block.querySelector('.question-block-title');
+    if (title) title.textContent = 'คำถามรายการที่ ' + (idx + 1);
+  });
+}
+
+function updateSingleFileSummary(input) {
+  const summary = input.closest('.file-card').querySelector('.item-file-summary');
+  const files = input.files || [];
+
+  if (!files.length) {
+    summary.textContent = 'ยังไม่ได้เลือกไฟล์';
+    return;
+  }
+
+  let total = 0;
+  for (const f of files) total += f.size;
+  const mb = (total / (1024 * 1024)).toFixed(2);
+  summary.textContent = 'เลือกแล้ว ' + files.length + ' ไฟล์ รวมประมาณ ' + mb + ' MB';
 }
 
 function updateFileSummary() {
-  const files = $('files').files;
+  const generalInput = $('files');
+  if (!generalInput || !$('fileSummary')) return;
+
+  const files = generalInput.files;
   if (!files || !files.length) {
     $('fileSummary').textContent = 'ยังไม่ได้เลือกไฟล์';
     return;
@@ -154,19 +280,25 @@ function validateEmail(email) {
 
 function unlockForm(email) {
   verifiedEmail = String(email || '').trim().toLowerCase();
-  $('ownerEmail').value = verifiedEmail;
-  $('ownerEmail').readOnly = true;
-  $('ticketFormArea').classList.remove('form-locked');
+  if ($('ownerEmail')) {
+    $('ownerEmail').value = verifiedEmail;
+    $('ownerEmail').readOnly = true;
+  }
+  if ($('ticketFormArea')) $('ticketFormArea').classList.remove('form-locked');
 
   const badge = $('verifiedBadge');
-  badge.classList.remove('hidden');
-  badge.textContent = 'ยืนยันอีเมลแล้ว: ' + verifiedEmail;
+  if (badge) {
+    badge.classList.remove('hidden');
+    badge.textContent = 'ยืนยันอีเมลแล้ว: ' + verifiedEmail;
+  }
 }
 
 async function loadDropdownData() {
   try {
     setLoading(true, 'กำลังโหลดข้อมูล...');
-    const res = await api('getDropdownData');
+    const res = await api('getDropdownData', {
+      formType: FORM_CONFIG.formType
+    });
 
     setLoading(false);
 
@@ -204,7 +336,8 @@ async function openOtpFlow() {
 
     const res = await api('sendOtp', {
       email: email,
-      purpose: 'submit'
+      purpose: 'submit',
+      formType: FORM_CONFIG.formType
     });
 
     setLoading(false);
@@ -215,9 +348,11 @@ async function openOtpFlow() {
     }
 
     currentRequestId = res.requestId || '';
-    $('otpInput').value = '';
-    $('otpModalText').innerHTML =
-      'กรุณากรอก OTP ที่ส่งไปยัง <strong>' + esc(email) + '</strong>';
+    if ($('otpInput')) $('otpInput').value = '';
+    if ($('otpModalText')) {
+      $('otpModalText').innerHTML =
+        'กรุณากรอก OTP ที่ส่งไปยัง <strong>' + esc(email) + '</strong>';
+    }
     openOtpModal();
 
   } catch (err) {
@@ -241,7 +376,8 @@ async function verifyOtp() {
     const res = await api('verifyOtp', {
       requestId: currentRequestId,
       otp: otp,
-      purpose: 'submit'
+      purpose: 'submit',
+      formType: FORM_CONFIG.formType
     });
 
     setLoading(false);
@@ -262,36 +398,44 @@ async function verifyOtp() {
   }
 }
 
+function resetQuestionBlocks() {
+  const wrap = $('questionItems');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  addQuestionBlock();
+  updateQuestionSummary();
+}
+
 function resetForm() {
-  $('ownerEmail').value = '';
-  $('ownerEmail').readOnly = false;
-  $('sendSystem').value = '';
-  $('titleName').value = '';
-  $('fullName').value = '';
-  $('division').value = '';
-  $('department').value = '';
-  $('phone').value = '';
-  $('question').value = '';
-  $('detail').value = '';
-  $('files').value = '';
-  $('otpInput').value = '';
+  if ($('ownerEmail')) {
+    $('ownerEmail').value = '';
+    $('ownerEmail').readOnly = false;
+  }
+  ['sendSystem', 'titleName', 'fullName', 'division', 'department', 'phone'].forEach(function(id) {
+    if ($(id)) $(id).value = '';
+  });
+  if ($('files')) $('files').value = '';
+  if ($('otpInput')) $('otpInput').value = '';
 
   document.querySelectorAll('input[name="gender"]').forEach(function(el) {
     el.checked = false;
   });
 
-  $('ticketFormArea').classList.add('form-locked');
-  $('verifiedBadge').classList.add('hidden');
-  $('verifiedBadge').textContent = '';
-  $('fileSummary').textContent = 'ยังไม่ได้เลือกไฟล์';
+  if ($('ticketFormArea')) $('ticketFormArea').classList.add('form-locked');
+  if ($('verifiedBadge')) {
+    $('verifiedBadge').classList.add('hidden');
+    $('verifiedBadge').textContent = '';
+  }
+  if ($('fileSummary')) $('fileSummary').textContent = 'ยังไม่ได้เลือกไฟล์';
 
   verifiedRequestId = '';
   verifiedEmail = '';
   currentRequestId = '';
   closeAlertAction = 'close';
 
+  resetQuestionBlocks();
   closeOtpModal();
-  $('alertModal').style.display = 'none';
+  if ($('alertModal')) $('alertModal').style.display = 'none';
 }
 
 function validateBeforeSubmit(payload) {
@@ -304,7 +448,13 @@ function validateBeforeSubmit(payload) {
   if (!payload.division) return 'กรุณาเลือกส่วนงาน';
   if (!payload.department) return 'กรุณาเลือกฝ่าย';
   if (!payload.phone) return 'กรุณากรอกเบอร์ภายใน';
-  if (!payload.question) return 'กรุณากรอกคำถามหรือข้อสงสัย';
+  if (!payload.items || !payload.items.length) return 'กรุณากรอกคำถามอย่างน้อย 1 รายการ';
+
+  for (let i = 0; i < payload.items.length; i++) {
+    if (!payload.items[i].question) {
+      return 'กรุณากรอกคำถามหรือข้อสงสัยในรายการที่ ' + (i + 1);
+    }
+  }
   return '';
 }
 
@@ -327,15 +477,21 @@ function fileToBase64(file) {
   });
 }
 
-async function collectPayload() {
-  const inputFiles = $('files').files;
-  const files = [];
-  let totalSize = 0;
+async function collectAllFilesForLimitCheck() {
+  const all = [];
 
-  for (const f of inputFiles) {
+  if ($('files') && $('files').files) {
+    for (const f of $('files').files) all.push(f);
+  }
+
+  document.querySelectorAll('.item-files').forEach(function(input) {
+    for (const f of input.files || []) all.push(f);
+  });
+
+  let totalSize = 0;
+  for (const f of all) {
     const sizeMb = f.size / (1024 * 1024);
     totalSize += f.size;
-
     if (sizeMb > MAX_FILE_SIZE_MB) {
       throw new Error('ไฟล์ "' + f.name + '" มีขนาดเกิน ' + MAX_FILE_SIZE_MB + ' MB');
     }
@@ -345,12 +501,47 @@ async function collectPayload() {
   if (totalMb > MAX_TOTAL_SIZE_MB) {
     throw new Error('ขนาดไฟล์รวมเกิน ' + MAX_TOTAL_SIZE_MB + ' MB');
   }
+}
 
-  for (const f of inputFiles) {
-    files.push(await fileToBase64(f));
+async function collectPayload() {
+  await collectAllFilesForLimitCheck();
+
+  const generalFiles = [];
+  if ($('files') && $('files').files) {
+    for (const f of $('files').files) {
+      const item = await fileToBase64(f);
+      item.scope = 'general';
+      generalFiles.push(item);
+    }
+  }
+
+  const items = [];
+  const itemFiles = [];
+  const blocks = getAllQuestionBlocks();
+
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i];
+    const question = (block.querySelector('.question-input') || {}).value || '';
+    const detail = (block.querySelector('.detail-input') || {}).value || '';
+    const fileInput = block.querySelector('.item-files');
+
+    items.push({
+      question: String(question).trim(),
+      detail: String(detail).trim()
+    });
+
+    if (fileInput && fileInput.files) {
+      for (const f of fileInput.files) {
+        const item = await fileToBase64(f);
+        item.scope = 'item';
+        item.itemNo = i + 1;
+        itemFiles.push(item);
+      }
+    }
   }
 
   return {
+    formType: FORM_CONFIG.formType,
     ownerEmail: verifiedEmail || $('ownerEmail').value.trim(),
     sendSystem: $('sendSystem').value.trim(),
     titleName: $('titleName').value.trim(),
@@ -359,9 +550,8 @@ async function collectPayload() {
     division: $('division').value.trim(),
     department: $('department').value.trim(),
     phone: $('phone').value.trim(),
-    question: $('question').value.trim(),
-    detail: $('detail').value.trim(),
-    files: files
+    items: items,
+    files: generalFiles.concat(itemFiles)
   };
 }
 
@@ -383,6 +573,7 @@ async function submitTicket() {
     setLoading(true, 'กำลังบันทึกคำร้อง...');
 
     const res = await api('submitTicket', {
+      formType: FORM_CONFIG.formType,
       verifiedRequestId: verifiedRequestId,
       payload: payload
     });
@@ -394,7 +585,7 @@ async function submitTicket() {
       return;
     }
 
-    const extraHtml = buildLuxuryCertificate(res.ticketId, res.checkUrl);
+    const extraHtml = buildLuxuryCertificate(res.ticketId, res.checkUrl, res.itemCount);
     showSuccessPopup(
       'ออกเลขคำร้องเรียบร้อยแล้ว',
       'ระบบได้บันทึกข้อมูลของท่านสำเร็จ',
@@ -408,7 +599,22 @@ async function submitTicket() {
   }
 }
 
+function applyFormBranding() {
+  document.documentElement.setAttribute('data-form-type', FORM_CONFIG.formType || 'acc');
+  if ($('systemNameText')) $('systemNameText').textContent = FORM_CONFIG.systemName || 'ระบบบริการ';
+  if ($('heroSystemName')) $('heroSystemName').textContent = FORM_CONFIG.systemName || 'ระบบบริการ';
+  if ($('heroPrefixText')) $('heroPrefixText').textContent = (FORM_CONFIG.prefix || '').toUpperCase();
+  if (FORM_CONFIG.systemName) document.title = FORM_CONFIG.systemName;
+}
+
 window.addEventListener('load', function() {
+  applyFormBranding();
   loadDropdownData();
-  $('files').addEventListener('change', updateFileSummary);
+  resetQuestionBlocks();
+  if ($('files')) $('files').addEventListener('change', updateFileSummary);
+  if ($('addQuestionBtn')) {
+    $('addQuestionBtn').addEventListener('click', function() {
+      addQuestionBlock();
+    });
+  }
 });
