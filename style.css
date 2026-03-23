@@ -224,3 +224,6 @@ button:disabled{ opacity:.65; cursor:not-allowed; transform:none; }
   .question-block{ padding:14px; }
 }
 @media (max-width: 420px){ .hero-title{ font-size:23px; } input, select, textarea, button{ font-size:16px; } }
+
+
+.btn-primary:disabled,.btn-secondary:disabled,.btn-outline:disabled{opacity:.72;filter:saturate(.8);}

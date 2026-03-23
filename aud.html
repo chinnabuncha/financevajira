@@ -8,13 +8,8 @@
 </head>
 <body>
   <script>
-    window.FORM_CONFIG = {
-      formType: 'aud',
-      systemName: 'ระบบงานตรวจสอบ',
-      prefix: 'AUD'
-    };
+    window.FORM_CONFIG = { formType: 'aud', systemName: 'ระบบงานตรวจสอบ', prefix: 'AUD' };
   </script>
-
   <div class="page">
     <div class="shell">
       <section class="hero">
@@ -22,20 +17,15 @@
           <div class="inst-line-1">คณะแพทยศาสตร์วชิรพยาบาล มหาวิทยาลัยนวมินทราธิราช</div>
           <div class="inst-line-2">ระบบรับคำร้องออนไลน์ ฝ่ายการคลัง</div>
         </div>
-
         <div class="hero-main">
-          <div class="logo-frame">
-            <img src="https://drive.google.com/thumbnail?id=11pn9kzQIox1rgSxTGEpkeTaKn_-sllod&sz=w400" alt="Logo">
-          </div>
-
+          <div class="logo-frame"><img src="https://drive.google.com/thumbnail?id=11pn9kzQIox1rgSxTGEpkeTaKn_-sllod&sz=w400" alt="Logo"></div>
           <div class="hero-copy">
             <div class="hero-badge">Executive Service Portal</div>
             <h1 class="hero-title"><span id="heroPrefixText">AUD</span></h1>
             <p class="hero-subtitle" id="heroSystemName">ระบบงานตรวจสอบ</p>
-</div>
+          </div>
         </div>
       </section>
-
       <div class="content">
         <section class="panel">
           <div class="panel-head">
@@ -46,17 +36,14 @@
             <div class="field">
               <label>อีเมลสำหรับรับ OTP <span class="required-star">*</span></label>
               <div class="verify-layout">
-                <div class="input-shell">
-                  <input type="email" id="ownerEmail" placeholder="name@nmu.ac.th">
-                </div>
+                <div class="input-shell"><input type="email" id="ownerEmail" placeholder="name@nmu.ac.th"></div>
                 <button class="btn-primary vip-dark" type="button" id="otpBtn" onclick="openOtpFlow()">ส่ง OTP</button>
               </div>
-              <div class="note">เมื่อยืนยันสำเร็จ ระบบจะปลดล็อกแบบฟอร์มให้กรอกข้อมูลต่อได้</div>
+              <div class="note">เมื่อยืนยันสำเร็จ ระบบจะปลดล็อกแบบฟอร์มทั้งหมดให้กรอกข้อมูล เพิ่มคำถาม และแนบไฟล์ได้ครบทุกส่วน</div>
               <div id="verifiedBadge" class="verified-badge hidden"></div>
             </div>
           </div>
         </section>
-
         <section class="panel otp-section form-locked" id="ticketFormArea">
           <div class="panel-head">
             <h2 class="panel-title">ข้อมูลผู้ส่งคำร้อง</h2>
@@ -64,136 +51,30 @@
           </div>
           <div class="panel-body">
             <div class="grid">
-              <div class="field">
-                <label>ส่งระบบ <span class="required-star">*</span></label>
-                <div class="input-shell">
-                  <select id="sendSystem">
-                    <option value="">-- กรุณาเลือกส่งระบบ --</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="field">
-                <label>คำนำหน้า <span class="required-star">*</span></label>
-                <div class="input-shell">
-                  <select id="titleName">
-                    <option value="">-- กรุณาเลือก --</option>
-                    <option value="นาย">นาย</option>
-                    <option value="นาง">นาง</option>
-                    <option value="นางสาว">นางสาว</option>
-                    <option value="อื่นๆ">อื่นๆ</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="field full">
-                <label>ชื่อ-นามสกุล <span class="required-star">*</span></label>
-                <div class="input-shell">
-                  <input type="text" id="fullName" placeholder="กรอกชื่อ-นามสกุล">
-                </div>
-              </div>
-
-              <div class="field full">
-                <label>เพศ <span class="required-star">*</span></label>
-                <div class="radio-wrap">
-                  <label class="radio-pill"><input type="radio" name="gender" value="ชาย"> ชาย</label>
-                  <label class="radio-pill"><input type="radio" name="gender" value="หญิง"> หญิง</label>
-                  <label class="radio-pill"><input type="radio" name="gender" value="ไม่ระบุ"> ไม่ระบุ</label>
-                </div>
-              </div>
-
-              <div class="field">
-                <label>ส่วนงาน <span class="required-star">*</span></label>
-                <div class="input-shell">
-                  <select id="division">
-                    <option value="">-- กรุณาเลือกส่วนงาน --</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="field">
-                <label>หน่วยงาน/ฝ่าย/ภาควิชา/งาน/กลุ่มงาน <span class="required-star">*</span></label>
-                <div class="input-shell">
-                  <select id="department">
-                    <option value="">-- กรุณาเลือกฝ่าย --</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="field full">
-                <label>เบอร์ภายใน <span class="required-star">*</span></label>
-                <div class="input-shell">
-                  <input type="text" id="phone" placeholder="เช่น 1234">
-                </div>
-              </div>
+              <div class="field"><label>ส่งระบบ <span class="required-star">*</span></label><div class="input-shell"><select id="sendSystem"><option value="">-- กรุณาเลือกส่งระบบ --</option></select></div></div>
+              <div class="field"><label>คำนำหน้า <span class="required-star">*</span></label><div class="input-shell"><select id="titleName"><option value="">-- กรุณาเลือก --</option><option value="นาย">นาย</option><option value="นาง">นาง</option><option value="นางสาว">นางสาว</option><option value="อื่นๆ">อื่นๆ</option></select></div></div>
+              <div class="field full"><label>ชื่อ-นามสกุล <span class="required-star">*</span></label><div class="input-shell"><input type="text" id="fullName" placeholder="กรอกชื่อ-นามสกุล"></div></div>
+              <div class="field full"><label>เพศ <span class="required-star">*</span></label><div class="radio-wrap"><label class="radio-pill"><input type="radio" name="gender" value="ชาย"> ชาย</label><label class="radio-pill"><input type="radio" name="gender" value="หญิง"> หญิง</label><label class="radio-pill"><input type="radio" name="gender" value="ไม่ระบุ"> ไม่ระบุ</label></div></div>
+              <div class="field"><label>ส่วนงาน <span class="required-star">*</span></label><div class="input-shell"><select id="division"><option value="">-- กรุณาเลือกส่วนงาน --</option></select></div></div>
+              <div class="field"><label>หน่วยงาน/ฝ่าย/ภาควิชา/งาน/กลุ่มงาน <span class="required-star">*</span></label><div class="input-shell"><select id="department"><option value="">-- กรุณาเลือกฝ่าย --</option></select></div></div>
+              <div class="field full"><label>เบอร์ภายใน <span class="required-star">*</span></label><div class="input-shell"><input type="text" id="phone" placeholder="เช่น 1234"></div></div>
             </div>
           </div>
         </section>
-
         <section class="panel otp-section form-locked" id="questionPanel">
-          <div class="panel-head">
-            <h2 class="panel-title">รายการคำถาม</h2>
-            <p class="panel-sub">1 Ticket สามารถมีได้หลายคำถาม แต่จะออกเลข Ticket เดียวกัน</p>
-          </div>
+          <div class="panel-head"><h2 class="panel-title">รายการคำถาม</h2><p class="panel-sub">1 Ticket สามารถมีได้หลายคำถาม แต่จะออกเลข Ticket เดียวกัน</p></div>
           <div class="panel-body">
-            <div class="question-toolbar">
-              <div class="question-count" id="questionCountText">ขณะนี้มี 1 รายการคำถาม</div>
-              <button class="btn-secondary" type="button" id="addQuestionBtn">+ เพิ่มคำถาม</button>
-            </div>
-
+            <div class="question-toolbar"><div class="question-count" id="questionCountText">ขณะนี้มี 1 รายการคำถาม</div><button class="btn-secondary" type="button" id="addQuestionBtn">+ เพิ่มคำถาม</button></div>
             <div id="questionItems"></div>
-
-            <div class="field full" style="margin-top:16px;">
-              <label>ไฟล์แนบส่วนกลางของ Ticket</label>
-              <div class="file-card">
-                <input type="file" id="files" multiple>
-                <div class="note">ไฟล์ชุดนี้จะถูกแนบไปกับทุกรายการภายใต้ Ticket เดียวกัน</div>
-                <div id="fileSummary" class="file-summary">ยังไม่ได้เลือกไฟล์</div>
-              </div>
-            </div>
-
-            <div class="actions">
-              <button class="btn-primary vip-dark" type="button" id="submitBtn" onclick="submitTicket()">ยืนยันส่งคำร้อง</button>
-              <button class="btn-outline" type="button" onclick="resetForm()">ล้างข้อมูล</button>
-            </div>
+            <div class="field full" style="margin-top:16px;"><label>ไฟล์แนบส่วนกลางของ Ticket</label><div class="file-card"><input type="file" id="files" multiple><div class="note">ไฟล์ชุดนี้จะถูกแนบไปกับทุกรายการภายใต้ Ticket เดียวกัน</div><div id="fileSummary" class="file-summary">ยังไม่ได้เลือกไฟล์</div></div></div>
+            <div class="actions"><button class="btn-primary vip-dark" type="button" id="submitBtn" onclick="submitTicket()">ยืนยันส่งคำร้อง</button><button class="btn-outline" type="button" onclick="resetForm()">ล้างข้อมูล</button></div>
           </div>
         </section>
       </div>
     </div>
   </div>
-      <div id="loadingText">กำลังดำเนินการ...</div>
-    </div>
-  </div>
-
-  <div id="otpModal" class="modal-backdrop" style="display:none;">
-    <div class="modal">
-      <h3>ยืนยันอีเมล</h3>
-      <p id="otpModalText">กรุณากรอก OTP ที่ส่งไปยังอีเมลของท่าน</p>
-      <div class="field">
-        <label>OTP 6 หลัก</label>
-        <div class="input-shell">
-          <input type="text" id="otpInput" maxlength="6" inputmode="numeric" placeholder="กรอกรหัส OTP">
-        </div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn-primary vip-dark" type="button" onclick="verifyOtp()">ยืนยัน OTP</button>
-        <button class="btn-outline" type="button" onclick="closeOtpModal()">ยกเลิก</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="alertModal" class="modal-backdrop" style="display:none;">
-    <div class="modal">
-      <div id="alertIcon" class="alert-icon alert-success">✓</div>
-      <h3 id="alertTitle">สำเร็จ</h3>
-      <p id="alertMessage">ระบบดำเนินการเรียบร้อยแล้ว</p>
-      <div id="alertExtra"></div>
-      <div class="modal-actions">
-        <button class="btn-primary vip-dark" type="button" onclick="closeAlertModal()">ตกลง</button>
-      </div>
-    </div>
-  </div>
-
+  <div id="otpModal" class="modal-backdrop" style="display:none;"><div class="modal"><h3>ยืนยันอีเมล</h3><p id="otpModalText">กรุณากรอก OTP ที่ส่งไปยังอีเมลของท่าน</p><div class="field"><label>OTP 6 หลัก</label><div class="input-shell"><input type="text" id="otpInput" maxlength="6" inputmode="numeric" placeholder="กรอกรหัส OTP"></div></div><div class="modal-actions"><button class="btn-primary vip-dark" type="button" onclick="verifyOtp()">ยืนยัน OTP</button><button class="btn-outline" type="button" onclick="closeOtpModal()">ยกเลิก</button></div></div></div>
+  <div id="alertModal" class="modal-backdrop" style="display:none;"><div class="modal"><div id="alertIcon" class="alert-icon alert-success">✓</div><h3 id="alertTitle">สำเร็จ</h3><p id="alertMessage">ระบบดำเนินการเรียบร้อยแล้ว</p><div id="alertExtra"></div><div class="modal-actions"><button class="btn-primary vip-dark" type="button" onclick="closeAlertModal()">ตกลง</button></div></div></div>
   <script src="app.js"></script>
 </body>
 </html>
