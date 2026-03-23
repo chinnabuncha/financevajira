@@ -5,6 +5,7 @@ let verifiedRequestId = '';
 let verifiedEmail = '';
 let closeAlertAction = 'close';
 let isBusy = false;
+let dropdownDataCache = null;
 
 const MAX_FILE_SIZE_MB = 5;
 const MAX_TOTAL_SIZE_MB = 15;
@@ -48,6 +49,24 @@ function fillSelectOptions(selectId, items, placeholder) {
   select.innerHTML=''; select.appendChild(frag);
 }
 
+function clearGhostValues(){
+  document.querySelectorAll('.detail-input, .question-input').forEach(function(el){
+    if (el && (el.value === '1' || el.value === '1 ' || el.value === ' 1')) el.value = '';
+  });
+}
+function applyAutoSendSystem(){
+  const select = $('sendSystem');
+  if(!select) return;
+  const autoValue = String(FORM_CONFIG.systemName || '').trim();
+  select.innerHTML = '';
+  const opt = document.createElement('option');
+  opt.value = autoValue;
+  opt.textContent = autoValue;
+  opt.selected = true;
+  select.appendChild(opt);
+  select.value = autoValue;
+  select.disabled = true;
+}
 function showAlertPopup(type, title, message, extraHtml, action) {
   closeAlertAction = action || 'close';
   const icon = $('alertIcon');
@@ -108,9 +127,11 @@ function addQuestionBlock(prefill){
   if(fileInput) fileInput.addEventListener('change', function(){ updateSingleFileSummary(fileInput); });
   const q=block.querySelector('.question-input');
   const d=block.querySelector('.detail-input');
-  if(q) q.value = prefill && prefill.question ? prefill.question : '';
-  if(d) d.value = prefill && prefill.detail ? prefill.detail : '';
+  if(q){ q.value = prefill && prefill.question ? prefill.question : ''; q.setAttribute('autocomplete','off'); }
+  if(d){ d.value = prefill && prefill.detail ? prefill.detail : ''; d.setAttribute('autocomplete','off'); d.setAttribute('autocorrect','off'); d.setAttribute('spellcheck','false'); }
+  setTimeout(function(){ if(q && q.value==='1') q.value=''; if(d && d.value==='1') d.value=''; }, 0);
   renumberQuestionBlocks(); updateQuestionSummary();
+  clearGhostValues();
 }
 function removeQuestionBlock(btn){ const block = btn.closest('.question-block'); if(!block) return; block.remove(); renumberQuestionBlocks(); updateQuestionSummary(); }
 function renumberQuestionBlocks(){
@@ -147,9 +168,11 @@ async function loadDropdownData(){
     setLoading(true);
     const res = await api('getDropdownData');
     if(!res || !res.ok) throw new Error((res && res.message) || 'โหลดรายการไม่สำเร็จ');
+    dropdownDataCache = res;
     fillSelectOptions('division', res.divisions || [], '-- กรุณาเลือกส่วนงาน --');
     fillSelectOptions('department', res.departments || [], '-- กรุณาเลือกฝ่าย --');
-    fillSelectOptions('sendSystem', res.sendSystems || [], '-- กรุณาเลือกส่งระบบ --');
+    applyAutoSendSystem();
+    clearGhostValues();
   }catch(err){ showErrorPopup(err.message || 'เกิดข้อผิดพลาดในการโหลด dropdown'); }
   finally{ setLoading(false); }
 }
@@ -187,7 +210,8 @@ async function verifyOtp(){
 function resetQuestionBlocks(){ const wrap=$('questionItems'); if(!wrap) return; wrap.innerHTML=''; addQuestionBlock(); updateQuestionSummary(); }
 function resetForm(){
   if($('ownerEmail')){ $('ownerEmail').value=''; $('ownerEmail').readOnly=false; }
-  ['sendSystem','titleName','fullName','division','department','phone'].forEach(function(id){ if($(id)) $(id).value=''; });
+  ['titleName','fullName','division','department','phone'].forEach(function(id){ if($(id)) $(id).value=''; });
+  applyAutoSendSystem();
   if($('otpInput')) $('otpInput').value='';
   document.querySelectorAll('input[name="gender"]').forEach(function(el){ el.checked=false; });
   document.querySelectorAll('.otp-section').forEach(function(el){ el.classList.add('form-locked'); });
@@ -224,7 +248,7 @@ async function collectPayload(){
     items.push({ question: question, detail: detail });
     if(fileInput && fileInput.files){ for(const f of fileInput.files){ const item=await fileToBase64(f); item.scope='item'; item.itemNo=i+1; itemFiles.push(item); } }
   }
-  return { formType: FORM_CONFIG.formType, ownerEmail: verifiedEmail || (($('ownerEmail')||{}).value||'').trim(), sendSystem:(($('sendSystem')||{}).value||'').trim(), titleName:(($('titleName')||{}).value||'').trim(), fullName:(($('fullName')||{}).value||'').trim(), gender:getGender(), division:(($('division')||{}).value||'').trim(), department:(($('department')||{}).value||'').trim(), phone:(($('phone')||{}).value||'').trim(), items:items, files:itemFiles };
+  return { formType: FORM_CONFIG.formType, ownerEmail: verifiedEmail || (($('ownerEmail')||{}).value||'').trim(), sendSystem:(FORM_CONFIG.systemName || (($('sendSystem')||{}).value||'')).trim(), titleName:(($('titleName')||{}).value||'').trim(), fullName:(($('fullName')||{}).value||'').trim(), gender:getGender(), division:(($('division')||{}).value||'').trim(), department:(($('department')||{}).value||'').trim(), phone:(($('phone')||{}).value||'').trim(), items:items, files:itemFiles };
 }
 async function submitTicket(){
   if(isBusy) return;
@@ -239,4 +263,4 @@ async function submitTicket(){
   finally{ setLoading(false); }
 }
 function applyFormBranding(){ document.documentElement.setAttribute('data-form-type', FORM_CONFIG.formType || 'acc'); if($('heroSystemName')) $('heroSystemName').textContent = FORM_CONFIG.systemName || 'ระบบบริการ'; if($('heroPrefixText')) $('heroPrefixText').textContent = (FORM_CONFIG.prefix || '').toUpperCase(); if(FORM_CONFIG.systemName) document.title = FORM_CONFIG.systemName; }
-window.addEventListener('load', function(){ applyFormBranding(); loadDropdownData(); resetQuestionBlocks(); if($('addQuestionBtn')) $('addQuestionBtn').addEventListener('click', addQuestionBlock); });
+window.addEventListener('load', function(){ applyFormBranding(); applyAutoSendSystem(); resetQuestionBlocks(); clearGhostValues(); loadDropdownData(); if($('addQuestionBtn')) $('addQuestionBtn').addEventListener('click', addQuestionBlock); setTimeout(clearGhostValues, 50); });
