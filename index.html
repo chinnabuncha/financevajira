@@ -1,216 +1,499 @@
 <!DOCTYPE html>
 <html lang="th">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>ฟอร์มรับคำร้อง - ฝ่ายการคลัง</title>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <div class="page">
-      <div class="shell">
-        <section class="hero">
-          <div class="hero-topbar">
-            <div class="hero-topbar-left">
-              <div class="inst-line-1">Vajira Hospital Faculty of Medicine</div>
-              <div class="inst-line-2">ฝ่ายการคลัง • คณะแพทยศาสตร์วชิรพยาบาล มหาวิทยาลัยนวมินทราธิราช</div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Finance Smart Portal</title>
+  <meta name="description" content="ศูนย์รวมฟอร์มออนไลน์ 7 ระบบ แบบโปร่งใส สบายตา รองรับมือถือ">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#eefbfb;
+      --bg2:#e7f8f6;
+      --bg3:#dff3f6;
+      --glass:rgba(255,255,255,.54);
+      --glass-strong:rgba(255,255,255,.72);
+      --line:rgba(70,140,145,.14);
+      --line-strong:rgba(70,140,145,.20);
+      --text:#18383d;
+      --muted:#5f7f84;
+      --mint:#40d7c4;
+      --cyan:#57cfe1;
+      --teal:#1ea8a3;
+      --shadow:0 18px 50px rgba(63, 126, 129, .12);
+      --shadow-soft:0 10px 28px rgba(63, 126, 129, .08);
+      --radius-xl:30px;
+      --radius-lg:24px;
+      --radius-md:18px;
+      --safe-top:max(18px, env(safe-area-inset-top));
+      --safe-bottom:max(18px, env(safe-area-inset-bottom));
+    }
+
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;min-height:100%;scroll-behavior:smooth}
+    body{
+      font-family:"Prompt",system-ui,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 12% 16%, rgba(87,207,225,.14), transparent 24%),
+        radial-gradient(circle at 88% 18%, rgba(64,215,196,.12), transparent 22%),
+        radial-gradient(circle at 50% 100%, rgba(255,255,255,.55), transparent 28%),
+        linear-gradient(180deg, var(--bg1), var(--bg2) 50%, var(--bg3));
+      overflow-x:hidden;
+    }
+
+    .bg-blur,
+    .bg-blur::before,
+    .bg-blur::after{
+      content:"";
+      position:fixed;
+      border-radius:999px;
+      filter:blur(40px);
+      pointer-events:none;
+      z-index:0;
+    }
+    .bg-blur{width:32vw;height:32vw;left:-8vw;top:3vh;background:rgba(87,207,225,.12);animation:float1 14s ease-in-out infinite}
+    .bg-blur::before{width:28vw;height:28vw;right:-72vw;top:16vh;background:rgba(64,215,196,.10);animation:float2 16s ease-in-out infinite}
+    .bg-blur::after{width:30vw;height:30vw;left:46vw;top:70vh;background:rgba(255,255,255,.38);animation:float3 18s ease-in-out infinite}
+
+    .page{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:var(--safe-top) 14px var(--safe-bottom)}
+
+    .shell{
+      position:relative;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.62), rgba(255,255,255,.42));
+      backdrop-filter:blur(18px);
+      box-shadow:var(--shadow);
+      border-radius:34px;
+      overflow:hidden;
+    }
+    .shell::before{
+      content:"";
+      position:absolute;inset:0 0 auto 0;height:1px;
+      background:linear-gradient(90deg, transparent, rgba(87,207,225,.55), rgba(64,215,196,.55), transparent);
+    }
+
+    .hero{padding:18px}
+    .topbar{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+    .brand{display:flex;gap:12px;align-items:center;min-width:0}
+    .logo{
+      width:62px;height:62px;border-radius:18px;flex:0 0 auto;padding:3px;
+      background:linear-gradient(135deg, rgba(87,207,225,.5), rgba(64,215,196,.45));
+      box-shadow:var(--shadow-soft);
+    }
+    .logo img{
+      width:100%;height:100%;object-fit:cover;border-radius:15px;background:rgba(255,255,255,.95);
+      border:1px solid rgba(255,255,255,.7);
+    }
+    .eyebrow{
+      font-family:"Plus Jakarta Sans",sans-serif;
+      font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+      color:var(--teal);margin-bottom:4px;
+    }
+    .org{font-size:16px;font-weight:700;line-height:1.4}
+    .suborg{margin-top:4px;font-size:12px;line-height:1.7;color:var(--muted)}
+
+    .status{
+      display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:10px 14px;border-radius:999px;
+      border:1px solid rgba(64,215,196,.18);
+      background:rgba(255,255,255,.5);
+      color:#226a68;font-size:12px;font-weight:700;backdrop-filter:blur(10px);
+    }
+    .status i{
+      width:9px;height:9px;border-radius:50%;display:inline-block;
+      background:linear-gradient(180deg, var(--mint), var(--cyan));
+      box-shadow:0 0 12px rgba(64,215,196,.45);
+    }
+
+    .hero-grid{display:grid;grid-template-columns:1fr;gap:16px;align-items:stretch}
+
+    .intro{
+      padding:6px 2px 2px;
+    }
+    .intro h1{
+      margin:0 0 10px;
+      font-family:"Plus Jakarta Sans","Prompt",sans-serif;
+      font-size:clamp(28px, 9vw, 54px);
+      line-height:1.05;
+      letter-spacing:-.03em;
+      color:#16373a;
+    }
+    .intro h1 span{
+      background:linear-gradient(135deg, #1d8e95, #3bbdb8 48%, #299fca);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+    }
+    .intro p{
+      margin:0;
+      font-size:14px;
+      line-height:1.9;
+      color:var(--muted);
+      max-width:640px;
+    }
+
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      min-height:50px;padding:13px 18px;border-radius:18px;text-decoration:none;font-weight:700;
+      transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .btn:active{transform:scale(.985)}
+    .btn-main{
+      color:white;
+      background:linear-gradient(135deg, #37bcbc, #4ccfc0 50%, #4dbddb);
+      box-shadow:0 14px 30px rgba(56, 185, 180, .18);
+    }
+    .btn-sub{
+      color:#1d5b60;
+      background:rgba(255,255,255,.58);
+      border:1px solid var(--line);
+    }
+
+    .hero-panel{
+      min-height:210px;
+      border-radius:28px;
+      background:linear-gradient(180deg, rgba(255,255,255,.56), rgba(255,255,255,.36));
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+      overflow:hidden;
+      position:relative;
+    }
+    .hero-panel::before{
+      content:"";
+      position:absolute;inset:0;
+      background:
+        linear-gradient(rgba(64,215,196,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(87,207,225,.07) 1px, transparent 1px);
+      background-size:26px 26px;
+      mask-image:linear-gradient(180deg, rgba(0,0,0,.95), rgba(0,0,0,.28));
+    }
+    .hero-panel::after{
+      content:"";
+      position:absolute;inset:auto -30px -30px auto;width:180px;height:180px;border-radius:50%;
+      background:radial-gradient(circle, rgba(87,207,225,.18), transparent 65%);
+    }
+    .panel-content{
+      position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;justify-content:space-between;
+    }
+    .panel-card{
+      align-self:flex-start;
+      min-width:160px;
+      border-radius:20px;
+      padding:14px 14px 12px;
+      background:rgba(255,255,255,.52);
+      border:1px solid rgba(87,207,225,.16);
+      box-shadow:var(--shadow-soft);
+      backdrop-filter:blur(10px);
+    }
+    .panel-card strong{display:block;font-size:12px;color:#28787f;margin-bottom:6px}
+    .panel-card span{display:block;font-size:18px;font-weight:800;font-family:"Plus Jakarta Sans",sans-serif;color:#16373a}
+    .panel-line{
+      display:flex;justify-content:space-between;gap:10px;align-items:center;
+      border-radius:18px;padding:12px 14px;background:rgba(255,255,255,.48);border:1px solid var(--line);
+      color:#2b6970;font-weight:600;font-size:13px;
+    }
+
+    .section{padding:18px}
+    .section-head{margin-bottom:14px}
+    .section-head h2{margin:0 0 6px;font-size:24px;font-weight:800;color:#17383d}
+    .section-head p{margin:0;font-size:13px;line-height:1.8;color:var(--muted)}
+
+    .cards-wrap{
+      margin:0 -18px;
+      padding:2px 18px 10px;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+      scroll-snap-type:x mandatory;
+    }
+    .cards-wrap::-webkit-scrollbar{display:none}
+    .cards{
+      display:grid;
+      grid-auto-flow:column;
+      grid-auto-columns:86%;
+      gap:14px;
+    }
+
+    .card{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      min-height:220px;
+      padding:18px;
+      border-radius:24px;
+      text-decoration:none;
+      color:inherit;
+      scroll-snap-align:start;
+      background:linear-gradient(180deg, rgba(255,255,255,.62), rgba(255,255,255,.44));
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+      backdrop-filter:blur(16px);
+      transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .card:active{transform:scale(.985)}
+    .card::before{
+      content:"";
+      position:absolute;inset:0;border-radius:24px;
+      background:linear-gradient(145deg, rgba(87,207,225,.06), rgba(64,215,196,.02) 55%, rgba(255,255,255,.08));
+      pointer-events:none;
+    }
+    .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .code{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-width:74px;min-height:40px;padding:8px 14px;border-radius:999px;
+      background:rgba(255,255,255,.72);
+      border:1px solid rgba(64,215,196,.16);
+      color:#1b7a7b;font-family:"Plus Jakarta Sans",sans-serif;font-size:13px;font-weight:800;letter-spacing:.12em;
+    }
+    .go{
+      width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
+      background:rgba(255,255,255,.62);border:1px solid var(--line);color:#246a6c;font-size:20px;font-weight:700;
+      flex:0 0 auto;
+    }
+    .card-mid{padding-top:18px}
+    .card h3{margin:0 0 8px;font-size:21px;line-height:1.35;font-weight:800;color:#17383d}
+    .card p{margin:0;font-size:13px;line-height:1.85;color:var(--muted)}
+    .card-bottom{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:18px;
+    }
+    .tag{
+      display:inline-flex;align-items:center;min-height:34px;padding:8px 12px;border-radius:999px;
+      background:rgba(255,255,255,.55);border:1px solid var(--line);font-size:11px;font-weight:700;color:#4d767b;
+    }
+    .hint{font-size:12px;font-weight:700;color:#2d7b7c}
+
+    .info-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:18px}
+    .info{
+      padding:16px;border-radius:22px;background:rgba(255,255,255,.46);border:1px solid var(--line);box-shadow:var(--shadow-soft);
+    }
+    .info h3{margin:0 0 8px;font-size:15px;font-weight:700;color:#17383d}
+    .info p{margin:0;font-size:13px;line-height:1.8;color:var(--muted)}
+
+    .foot{padding:14px 4px 2px;text-align:center;font-size:12px;line-height:1.8;color:#6a8a8e}
+
+    .reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease, transform .55s ease}
+    .reveal.show{opacity:1;transform:none}
+
+    @media (min-width:760px){
+      .page{padding-left:18px;padding-right:18px}
+      .hero{padding:22px}
+      .section{padding:22px}
+      .org{font-size:18px}
+      .suborg{font-size:13px}
+      .hero-grid{grid-template-columns:1.03fr .97fr;gap:18px}
+      .intro p{font-size:15px}
+      .cards-wrap{margin:0;padding:2px 0 0;overflow:visible;scroll-snap-type:none}
+      .cards{grid-auto-flow:unset;grid-auto-columns:unset;grid-template-columns:repeat(2, minmax(0,1fr))}
+      .info-grid{grid-template-columns:repeat(3, minmax(0,1fr))}
+    }
+
+    @media (min-width:1120px){
+      .page{padding-left:22px;padding-right:22px}
+      .cards{grid-template-columns:repeat(3, minmax(0,1fr))}
+    }
+
+    @keyframes float1{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(8px,-10px,0)}}
+    @keyframes float2{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(-8px,8px,0)}}
+    @keyframes float3{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(8px,-6px,0)}}
+  </style>
+</head>
+<body>
+  <div class="bg-blur"></div>
+
+  <main class="page">
+    <div class="shell reveal">
+      <section class="hero">
+        <div class="topbar">
+          <div class="brand">
+            <div class="logo">
+              <img src="https://drive.google.com/thumbnail?id=11pn9kzQIox1rgSxTGEpkeTaKn_-sllod&sz=w400" alt="โลโก้หน่วยงาน">
             </div>
-            <div class="hero-topbar-right">Executive Service Portal</div>
+            <div>
+              <div class="eyebrow">Smart Finance Portal</div>
+              <div class="org">คณะแพทยศาสตร์วชิรพยาบาล มหาวิทยาลัยนวมินทราธิราช</div>
+              <div class="suborg">ศูนย์รวมลิงก์ฟอร์มออนไลน์ 7 ระบบ · โทนโปร่งใส สบายตา · เหมาะกับมือถือและผู้บริหาร</div>
+            </div>
+          </div>
+          <div class="status"><i></i> พร้อมใช้งาน 7 ฟอร์ม</div>
+        </div>
+
+        <div class="hero-grid">
+          <div class="intro reveal">
+            <h1>เลือกฟอร์มแบบ <span>เรียบหรู โปร่งใส</span></h1>
+            <p>
+              ผมปรับหน้าแรกใหม่ให้เมนูทุกใบมีขนาดเท่ากัน ดูนิ่ง สะอาด และสบายตายิ่งขึ้น
+              ใช้โทนฟ้าเขียวอ่อนแบบผู้บริหาร พร้อมมิติแสงเงาเบา ๆ โดยไม่รกหรือแน่นเกินไปบนมือถือ
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-main" href="#forms">ดูเมนูทั้งหมด</a>
+              <a class="btn btn-sub" href="acc.html">เข้าฟอร์มแรกทันที</a>
+            </div>
+            
           </div>
 
-          <div class="hero-main">
-            <div class="logo-frame">
-              <img
-                id="mainLogo"
-                src="https://drive.google.com/thumbnail?id=11pn9kzQIox1rgSxTGEpkeTaKn_-sllod&sz=w400"
-                alt="Logo"
-                loading="eager"
-                decoding="async"
-                onerror="this.onerror=null;this.src='https://drive.google.com/uc?export=view&id=11pn9kzQIox1rgSxTGEpkeTaKn_-sllod';"
-              >
-            </div>
+      <script
+  src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.3/dist/dotlottie-wc.js"
+  type="module"
+></script>
 
-            <div class="hero-content">
-              <div class="hero-badge">VVIP Financial Support Experience</div>
-              <h1 class="hero-title">ฟอร์มรับคำร้อง</h1>
-              <p class="hero-subtitle">ระบบงานบัญชี สำหรับบุคลากรภายในองค์กร พร้อมยืนยันตัวตนด้วยอีเมลมหาวิทยาลัยก่อนส่งคำร้อง</p>
-            </div>
-          </div>
-        </section>
+<dotlottie-wc
+  src="https://lottie.host/8570b67f-eb35-4d57-af81-6ee74ea445f0/9Lt4O85BWE.lottie"
+  style="width: 300px;height: 300px"
+  autoplay
+  loop
+></dotlottie-wc>
+      </section>
 
-        <div class="content">
-          <section class="panel">
-            <div class="panel-head">
-              <h2 class="panel-title">ยืนยันตัวตนก่อนกรอกคำร้อง</h2>
-              <p class="panel-sub">กรุณาใช้อีเมล @nmu.ac.th เพื่อรับ OTP และปลดล็อกแบบฟอร์มสำหรับการส่งคำร้อง</p>
-            </div>
-
-            <div class="panel-body">
-              <div class="field">
-                <label>อีเมลสำหรับรับ OTP (@nmu.ac.th)</label>
-                <div class="verify-layout">
-                  <div class="input-shell">
-                    <input type="email" id="ownerEmail" placeholder="name@nmu.ac.th" autocomplete="email">
-                  </div>
-                  <button class="btn-primary" type="button" id="otpBtn" onclick="openOtpFlow()">ส่ง OTP</button>
-                </div>
-
-                <div class="note">ต้องยืนยันอีเมลให้เรียบร้อยก่อน จึงจะกรอกข้อมูลคำร้องได้</div>
-                <div id="verifiedBadge" class="verified-badge hidden"></div>
-              </div>
-            </div>
-          </section>
-
-          <section class="panel form-locked" id="ticketFormArea">
-            <div class="panel-head">
-              <h2 class="panel-title">ข้อมูลคำร้อง</h2>
-              <p class="panel-sub">กรอกข้อมูลให้ครบถ้วนเพื่อให้เจ้าหน้าที่ดำเนินการได้อย่างรวดเร็วและถูกต้อง</p>
-            </div>
-
-            <div class="panel-body">
-              <div class="grid">
-                <div class="field full">
-                  <label>ส่งระบบ *</label>
-                  <div class="input-shell">
-                    <select id="sendSystem">
-                      <option value="">-- กรุณาเลือก --</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="field">
-                  <label>คำนำหน้า *</label>
-                  <div class="input-shell">
-                    <select id="titleName">
-                      <option value="">-- กรุณาเลือก --</option>
-                      <option value="นาย">นาย</option>
-                      <option value="นาง">นาง</option>
-                      <option value="นางสาว">นางสาว</option>
-                      <option value="อื่นๆ">อื่นๆ</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="field">
-                  <label>ชื่อ-นามสกุล *</label>
-                  <div class="input-shell">
-                    <input type="text" id="fullName" autocomplete="name">
-                  </div>
-                </div>
-
-                <div class="field full">
-                  <label>เพศ *</label>
-                  <div class="radio-wrap">
-                    <label class="radio-pill"><input type="radio" name="gender" value="ชาย"> ชาย</label>
-                    <label class="radio-pill"><input type="radio" name="gender" value="หญิง"> หญิง</label>
-                    <label class="radio-pill"><input type="radio" name="gender" value="ไม่ระบุ"> ไม่ระบุ</label>
-                  </div>
-                </div>
-
-                <div class="field">
-                  <label>ส่วนงาน *</label>
-                  <div class="input-shell">
-                    <select id="division">
-                      <option value="">-- กรุณาเลือกส่วนงาน --</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="field">
-                  <label>ฝ่าย *</label>
-                  <div class="input-shell">
-                    <select id="department">
-                      <option value="">-- กรุณาเลือกฝ่าย --</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="field full">
-                  <label>เบอร์ภายใน *</label>
-                  <div class="input-shell">
-                    <input type="text" id="phone" inputmode="numeric">
-                  </div>
-                </div>
-
-                <div class="field full">
-                  <label>ตั้งคำถามหรือข้อสงสัย *</label>
-                  <div class="input-shell">
-                    <input type="text" id="question">
-                  </div>
-                </div>
-
-                <div class="field full">
-                  <label>รายละเอียดเพิ่มเติม</label>
-                  <div class="input-shell">
-                    <textarea id="detail"></textarea>
-                  </div>
-                </div>
-
-                <div class="field full">
-                  <label>แนบไฟล์</label>
-                  <div class="file-card">
-                    <div class="input-shell">
-                      <input type="file" id="files" multiple>
-                    </div>
-                    <div class="note">รองรับ PDF / JPG / PNG / DOCX และควรใช้ไฟล์ขนาดไม่ใหญ่มาก</div>
-                    <div id="fileSummary" class="file-summary">ยังไม่ได้เลือกไฟล์</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="vvip-box">
-                เวอร์ชันนี้ออกแบบในแนวผู้บริหารและบุคลากรภายในองค์กร โดยคงความหรูหราและความชัดเจนในการใช้งานบนมือถือ หากแนบไฟล์จำนวนมากหรือไฟล์ขนาดใหญ่มาก การส่งข้อมูลอาจใช้เวลานานขึ้น
-              </div>
-
-              <div class="actions">
-                <button class="btn-primary" type="button" id="submitBtn" onclick="submitTicket()">ยืนยัน ส่งคำร้อง</button>
-                <button class="btn-secondary" type="button" onclick="resetForm()">ล้างข้อมูล</button>
-              </div>
-            </div>
-          </section>
+      <section class="section" id="forms">
+        <div class="section-head reveal">
+          <h2>เมนูฟอร์มทั้งหมด</h2>
+          <p>บนมือถือสามารถปัดซ้าย‑ขวาได้ และทุกเมนูถูกจัดให้เท่ากันทั้งหมดเพื่อให้ภาพรวมดูเรียบร้อยมากขึ้น</p>
         </div>
-      </div>
-    </div>
 
-    <div id="loadingOverlay" class="loading-overlay">
-      <div class="loading-box">
-        <div class="spinner"></div>
-        <div id="loadingText">กำลังดำเนินการ...</div>
-      </div>
-    </div>
+        <div class="cards-wrap reveal">
+          <div class="cards">
+            <a class="card" href="acc.html">
+              <div class="card-top">
+                <div class="code">ACC</div>
+                <div class="go">→</div>
+              </div>
+              <div class="card-mid">
+                <h3>ระบบงานบัญชี</h3>
+                <p>สำหรับคำร้อง เอกสาร และการประสานงานในหมวดงานบัญชี</p>
+              </div>
+              <div class="card-bottom">
+                <span class="tag">acc.html</span>
+                <span class="hint">เปิดฟอร์ม</span>
+              </div>
+            </a>
 
-    <div id="otpModal" class="modal-backdrop">
-      <div class="modal">
-        <h3>ยืนยันอีเมล</h3>
-        <p id="otpModalText">กรุณากรอก OTP ที่ส่งไปยังอีเมลของท่าน</p>
+            <a class="card" href="aud.html">
+              <div class="card-top">
+                <div class="code">AUD</div>
+                <div class="go">→</div>
+              </div>
+              <div class="card-mid">
+                <h3>ระบบงานตรวจสอบ</h3>
+                <p>ใช้สำหรับเรื่องตรวจสอบ เอกสาร และการติดตามข้อมูลภายใน</p>
+              </div>
+              <div class="card-bottom">
+                <span class="tag">aud.html</span>
+                <span class="hint">เปิดฟอร์ม</span>
+              </div>
+            </a>
 
-        <div class="field">
-          <label>OTP 6 หลัก</label>
-          <div class="input-shell">
-            <input type="text" id="otpInput" maxlength="6" inputmode="numeric" placeholder="กรอกรหัส 6 หลัก">
+            <a class="card" href="bud.html">
+              <div class="card-top">
+                <div class="code">BUD</div>
+                <div class="go">→</div>
+              </div>
+              <div class="card-mid">
+                <h3>ระบบงานงบประมาณ</h3>
+                <p>สำหรับคำถามและคำขอที่เกี่ยวข้องกับงบประมาณและแผนงาน</p>
+              </div>
+              <div class="card-bottom">
+                <span class="tag">bud.html</span>
+                <span class="hint">เปิดฟอร์ม</span>
+              </div>
+            </a>
+
+            <a class="card" href="rec.html">
+              <div class="card-top">
+                <div class="code">REC</div>
+                <div class="go">→</div>
+              </div>
+              <div class="card-mid">
+                <h3>ระบบงานการเงินรับ</h3>
+                <p>เหมาะสำหรับเรื่องรายรับ การรับเงิน และเอกสารในงานการเงินรับ</p>
+              </div>
+              <div class="card-bottom">
+                <span class="tag">rec.html</span>
+                <span class="hint">เปิดฟอร์ม</span>
+              </div>
+            </a>
+
+            <a class="card" href="rem.html">
+              <div class="card-top">
+                <div class="code">REM</div>
+                <div class="go">→</div>
+              </div>
+              <div class="card-mid">
+                <h3>การเงินจ่าย ค่าตอบแทน</h3>
+                <p>ใช้สำหรับค่าตอบแทน เบิกจ่าย และประเด็นในหมวดค่าตอบแทน</p>
+              </div>
+              <div class="card-bottom">
+                <span class="tag">rem.html</span>
+                <span class="hint">เปิดฟอร์ม</span>
+              </div>
+            </a>
+
+            <a class="card" href="sal.html">
+              <div class="card-top">
+                <div class="code">SAL</div>
+                <div class="go">→</div>
+              </div>
+              <div class="card-mid">
+                <h3>การเงินจ่าย เงินเดือน</h3>
+                <p>สำหรับเรื่องเงินเดือน สิทธิประโยชน์ และข้อมูลด้านเงินเดือน</p>
+              </div>
+              <div class="card-bottom">
+                <span class="tag">sal.html</span>
+                <span class="hint">เปิดฟอร์ม</span>
+              </div>
+            </a>
+
+            <a class="card" href="exp.html">
+              <div class="card-top">
+                <div class="code">EXP</div>
+                <div class="go">→</div>
+              </div>
+              <div class="card-mid">
+                <h3>การเงินจ่าย อื่น ๆ</h3>
+                <p>สำหรับรายการจ่ายอื่น ๆ ที่ไม่ได้อยู่ในหมวดเงินเดือนหรือค่าตอบแทน</p>
+              </div>
+              <div class="card-bottom">
+                <span class="tag">exp.html</span>
+                <span class="hint">เปิดฟอร์ม</span>
+              </div>
+            </a>
           </div>
         </div>
 
-        <div class="modal-actions">
-          <button class="btn-primary vip-dark" type="button" onclick="verifyOtp()">ยืนยัน OTP</button>
-          <button class="btn-outline" type="button" onclick="closeOtpModal()">ยกเลิก</button>
+        <div class="info-grid">
+          <div class="info reveal">
+            <h3>เมนูเท่ากันทั้งหมด</h3>
+            <p>ทุกการ์ดใช้โครงสร้างและความสูงเท่ากัน จึงดูเป็นระเบียบและไม่เละเวลาเปิดบนมือถือ</p>
+          </div>
+          <div class="info reveal">
+            <h3>โปร่งใส สบายตา</h3>
+            <p>ลดเอฟเฟกต์ที่แรงเกินไป เปลี่ยนเป็น glass แบบนุ่ม ๆ เพื่อให้ดูเรียบหรูและใช้งานได้นาน</p>
+          </div>
+          <div class="info reveal">
+            <h3>พร้อมใช้กับ GitHub Pages</h3>
+            <p>ใช้ไฟล์นี้เป็น <strong>index.html</strong> ได้ทันที โดยวางไว้ในโฟลเดอร์เดียวกับทั้ง 7 ฟอร์ม</p>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <div id="alertModal" class="modal-backdrop">
-      <div class="modal">
-        <div id="alertIcon" class="alert-icon alert-success">✓</div>
-        <h3 id="alertTitle">สำเร็จ</h3>
-        <p id="alertMessage">ทำรายการเรียบร้อยแล้ว</p>
-        <div id="alertExtra"></div>
-
-        <div class="modal-actions">
-          <button class="btn-primary vip-dark" type="button" onclick="closeAlertModal()">ตกลง</button>
+        <div class="foot reveal">
+          ใช้งานร่วมกับ acc.html · aud.html · bud.html · rec.html · rem.html · sal.html · exp.html
         </div>
-      </div>
+      </section>
     </div>
+  </main>
 
-    <script src="app.js"></script>
-  </body>
+  <script>
+    const items = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('show');
+      });
+    }, { threshold: 0.12 });
+    items.forEach(el => io.observe(el));
+  </script>
+</body>
 </html>
